@@ -9,8 +9,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Clock, Users, Target } from "lucide-react"
+import { useProfile } from "@/hooks/use-profile"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function ExerciseManagement() {
+  const { currentProfile, loading } = useProfile();
   const [selectedCategory, setSelectedCategory] = useState("")
   const [showCreateForm, setShowCreateForm] = useState(false)
   const [showCreateCategory, setShowCreateCategory] = useState(false)
@@ -20,7 +23,7 @@ export function ExerciseManagement() {
   // Filtros
   const [filterPlayers, setFilterPlayers] = useState("")
   const [filterGoalkeepers, setFilterGoalkeepers] = useState("")
-  const [filterDifficulty, setFilterDifficulty] = useState("")
+  const [filterDifficulty, setFilterDifficulty] = useState("all") // Valor inicial no vacío
   const [filterTime, setFilterTime] = useState("")
 
   const colorOptions = [
@@ -134,12 +137,54 @@ export function ExerciseManagement() {
       const matchesCategory = !selectedCategory || exercise.category === selectedCategory
       const matchesPlayers = !filterPlayers || exercise.players.toString().includes(filterPlayers)
       const matchesGoalkeepers = !filterGoalkeepers || exercise.goalkeepers.toString().includes(filterGoalkeepers)
-      const matchesDifficulty = !filterDifficulty || exercise.difficulty === filterDifficulty
+      const matchesDifficulty = filterDifficulty === "all" || exercise.difficulty === filterDifficulty // Lógica corregida
       const matchesTime = !filterTime || exercise.duration.toString().includes(filterTime)
 
       return matchesCategory && matchesPlayers && matchesGoalkeepers && matchesDifficulty && matchesTime
     })
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
+  
+  // Mostrar Skeleton si está cargando
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-10 w-40" />
+        </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-1">
+            <Card className="bg-[#213041] border-[#305176]">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center">
+                  <Skeleton className="h-5 w-5 mr-2" />
+                  <Skeleton className="h-5 w-32" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+                <Skeleton className="h-12 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+          <div className="lg:col-span-2">
+            <Card className="bg-[#213041] border-[#305176]">
+              <CardHeader>
+                <CardTitle className="text-white">
+                  <Skeleton className="h-5 w-48" />
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <Skeleton className="h-24 w-full" />
+                <Skeleton className="h-24 w-full" />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -403,7 +448,7 @@ export function ExerciseManagement() {
                         <SelectValue placeholder="Dificultad" />
                       </SelectTrigger>
                       <SelectContent className="bg-[#213041] border-[#305176]">
-                        <SelectItem value="" className="text-white text-xs">
+                        <SelectItem value="all" className="text-white text-xs">
                           Todas
                         </SelectItem>
                         <SelectItem value="Fácil" className="text-white text-xs">

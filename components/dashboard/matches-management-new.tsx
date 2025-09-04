@@ -14,9 +14,9 @@ export function MatchesManagement() {
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([])
 
   // Filtros
-  const [filterResult, setFilterResult] = useState("")
-  const [filterLocation, setFilterLocation] = useState("")
-  const [filterTournament, setFilterTournament] = useState("")
+  const [filterResult, setFilterResult] = useState("all") // Valor inicial no vacío
+  const [filterLocation, setFilterLocation] = useState("all") // Valor inicial no vacío
+  const [filterTournament, setFilterTournament] = useState("all") // Valor inicial no vacío
 
   const today = new Date()
 
@@ -182,9 +182,9 @@ export function MatchesManagement() {
   }
 
   const filteredMatches = pastMatches.filter((match) => {
-    const matchesResult = !filterResult || match.status === filterResult
-    const matchesLocation = !filterLocation || match.location === filterLocation
-    const matchesTournament = !filterTournament || match.tournament === filterTournament
+    const matchesResult = filterResult === "all" || match.status === filterResult
+    const matchesLocation = filterLocation === "all" || match.location === filterLocation
+    const matchesTournament = filterTournament === "all" || match.tournament === filterTournament
 
     return matchesResult && matchesLocation && matchesTournament
   })
@@ -368,7 +368,7 @@ export function MatchesManagement() {
                     <SelectValue placeholder="Resultado" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#213041] border-[#305176]">
-                    <SelectItem value="" className="text-white text-xs">
+                    <SelectItem value="all" className="text-white text-xs">
                       Todos
                     </SelectItem>
                     <SelectItem value="Victoria" className="text-white text-xs">
@@ -388,7 +388,7 @@ export function MatchesManagement() {
                     <SelectValue placeholder="Lugar" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#213041] border-[#305176]">
-                    <SelectItem value="" className="text-white text-xs">
+                    <SelectItem value="all" className="text-white text-xs">
                       Todos
                     </SelectItem>
                     <SelectItem value="Local" className="text-white text-xs">
@@ -405,7 +405,7 @@ export function MatchesManagement() {
                     <SelectValue placeholder="Torneo" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#213041] border-[#305176]">
-                    <SelectItem value="" className="text-white text-xs">
+                    <SelectItem value="all" className="text-white text-xs">
                       Todos
                     </SelectItem>
                     {tournaments.map((tournament) => (

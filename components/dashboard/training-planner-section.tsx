@@ -8,8 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Calendar, Clock, Target, PieChart, Users, X, Check } from "lucide-react"
+import { useProfile } from "@/hooks/use-profile"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export function TrainingPlannerSection() {
+  const { currentProfile, loading } = useProfile();
   const [showPlannerForm, setShowPlannerForm] = useState(false)
   const [selectedExercises, setSelectedExercises] = useState<any[]>([])
   const [showTrainingDetail, setShowTrainingDetail] = useState<any>(null)
@@ -212,7 +215,7 @@ export function TrainingPlannerSection() {
   }
 
   const removeExercise = (exerciseId: number) => {
-    setSelectedExercises(selectedExercises.filter((e) => e.id !== exerciseId))
+    selectedExercises(selectedExercises.filter((e) => e.id !== exerciseId))
   }
 
   const calculatePieData = () => {
@@ -259,6 +262,30 @@ export function TrainingPlannerSection() {
       ...prev,
       [playerId]: !prev[playerId],
     }))
+  }
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <Skeleton className="h-8 w-64" />
+          <Skeleton className="h-10 w-40" />
+        </div>
+        <Card className="bg-[#213041] border-[#305176]">
+          <CardHeader>
+            <CardTitle className="text-white flex items-center">
+              <Skeleton className="h-5 w-5 mr-2" />
+              <Skeleton className="h-5 w-48" />
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+            <Skeleton className="h-24 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
@@ -566,6 +593,9 @@ export function TrainingPlannerSection() {
                       <SelectValue placeholder="Seleccionar categoría de ejercicio" />
                     </SelectTrigger>
                     <SelectContent className="bg-[#213041] border-[#305176]">
+                      <SelectItem value="all" className="text-white">
+                        Todas las categorías
+                      </SelectItem>
                       {exerciseCategories.map((cat) => (
                         <SelectItem key={cat} value={cat} className="text-white">
                           {cat}

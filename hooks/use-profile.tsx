@@ -9,6 +9,7 @@ interface ProfileContextType {
   setCurrentProfile: (profile: string) => void
   setUserPlan: (plan: string) => void
   getPermissions: () => ProfilePermissions
+  loading: boolean; // Añadir estado de carga
 }
 
 interface ProfilePermissions {
@@ -29,6 +30,7 @@ const ProfileContext = createContext<ProfileContextType | undefined>(undefined)
 export function ProfileProvider({ children }: { children: React.ReactNode }) {
   const [currentProfile, setCurrentProfile] = useState<string | null>(null)
   const [userPlan, setUserPlan] = useState<string>("institucional") // Default for demo
+  const [loading, setLoading] = useState(true); // Inicialmente en true
 
   // Cargar perfil guardado al inicializar
   useEffect(() => {
@@ -36,9 +38,11 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
     if (savedProfile) {
       setCurrentProfile(savedProfile)
     }
+    setLoading(false); // Marcar como cargado
   }, [])
 
   const getPermissions = (): ProfilePermissions => {
+    // ... (el resto de la función es el mismo)
     const isTechnician = currentProfile?.includes("TECNICO")
     const isPhysicalTrainer = currentProfile?.includes("PREPARADOR FISICO")
     const isKinesiologist = currentProfile === "KINESIOLOGO"
@@ -73,6 +77,7 @@ export function ProfileProvider({ children }: { children: React.ReactNode }) {
         setCurrentProfile,
         setUserPlan,
         getPermissions,
+        loading, // Pasar el estado de carga
       }}
     >
       {children}

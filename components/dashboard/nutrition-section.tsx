@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Apple, FileText, Scale, Activity } from "lucide-react"
 
 export function NutritionSection() {
-  const [selectedCategory, setSelectedCategory] = useState("")
+  const [selectedCategory, setSelectedCategory] = useState("all") // Valor inicial no vacío
   const [showReportForm, setShowReportForm] = useState(false)
   const [selectedPlayer, setSelectedPlayer] = useState<any>(null)
 
@@ -51,7 +51,7 @@ export function NutritionSection() {
     },
   ]
 
-  const filteredPlayers = selectedCategory
+  const filteredPlayers = selectedCategory && selectedCategory !== "all" // Lógica corregida
     ? players.filter((player) => player.category === categories.find((c) => c.id === selectedCategory)?.name)
     : players
 
@@ -85,7 +85,7 @@ export function NutritionSection() {
                     <SelectValue placeholder="Todas las categorías" />
                   </SelectTrigger>
                   <SelectContent className="bg-[#213041] border-[#305176]">
-                    <SelectItem value="" className="text-white">
+                    <SelectItem value="all" className="text-white">
                       Todas las categorías
                     </SelectItem>
                     {categories.map((cat) => (
