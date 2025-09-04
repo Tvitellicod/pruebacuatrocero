@@ -80,7 +80,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider
+    <AuthContext.Provider>
       value={{
         user,
         loading,
@@ -88,9 +88,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         signUp,
         signOut,
         resetPassword,
-      }}
-    >
-      {children}
+      }} > {children}>
     </AuthContext.Provider>
   )
 }
